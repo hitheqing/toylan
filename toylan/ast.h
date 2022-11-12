@@ -1,7 +1,10 @@
 ﻿#pragma once
+#include <iostream>
 #include <string>
 #include <vector>
 
+
+class parser;
 
 namespace token
 {
@@ -14,29 +17,29 @@ namespace token
         tok_ident = -2,
         tok_number= -3,
 
-        lp = '(',   // 40 parentheses
-        rp = ')',   // 41
-        ls = '[',   // 91 square brackets
-        rs = ']',   // 93
-        lc = '{',   // 123 curly brackets
-        rc = '}',   // 125
-        assign = '=',   // 61
-        lt = '<',   // 60
-        gt = '>',   // 62
-        add = '+', // 43
-        sub = '-', // 45
-        mul = '*', // 42
-        div = '/', // 47
-        dot = '.', // 46
-        colon = ':', // 58
-        comma = ',', // 44
+        lp = '(',           // 40 parentheses
+        rp = ')',           // 41
+        ls = '[',           // 91 square brackets
+        rs = ']',           // 93
+        lc = '{',           // 123 curly brackets
+        rc = '}',           // 125
+        assign = '=',       // 61
+        lt = '<',           // 60
+        gt = '>',           // 62
+        add = '+',          // 43
+        sub = '-',          // 45
+        mul = '*',          // 42
+        div = '/',          // 47
+        dot = '.',          // 46
+        colon = ':',        // 58
+        comma = ',',        // 44
     };
 
     class Token
     {
     public:
-        virtual ~Token() = default;
-        int tag;
+        virtual     ~Token() = default;
+        int         tag;
         std::string meta;
 
         Token(int tag, std::string value)
@@ -48,7 +51,6 @@ namespace token
 
     class NumToken : public Token
     {
-        
     public:
         NumToken(double value)
             : Token(tok_number, ""),
@@ -76,8 +78,8 @@ namespace ast
     class ExprAST
     {
     public:
-        virtual ~ExprAST() = default;
-        virtual double evaluate() {return 0.0;}
+        virtual        ~ExprAST() = default;
+        virtual double evaluate(parser&) { return 0.0; }
     };
 
 
@@ -101,7 +103,7 @@ namespace ast
      */
     class CallExprAST : public ExprAST
     {
-        std::string name;
+        std::string           name;
         std::vector<ExprAST*> args;
     public:
         CallExprAST(std::string name, std::vector<ExprAST*> args)
@@ -117,7 +119,7 @@ namespace ast
      */
     class BinOpExprAST : public ExprAST
     {
-        char op;
+        char     op;
         ExprAST* LHS;
         ExprAST* RHS;
     public:
@@ -127,20 +129,10 @@ namespace ast
               RHS(rhs)
         {
         }
-        double evaluate() override;
+        double evaluate(parser&) override;
     };
 
-    inline double BinOpExprAST::evaluate()
-    {
-        switch (op)
-        {
-        case '+' :return LHS->evaluate() + RHS->evaluate();
-        case '-' :return LHS->evaluate() - RHS->evaluate();
-        case '*' :return LHS->evaluate() * RHS->evaluate();
-        case '/' :return LHS->evaluate() / RHS->evaluate();
-            default: return 0.0;
-        }
-    }
+
 
 
     /**
@@ -154,7 +146,7 @@ namespace ast
             : value(value)
         {
         }
-        double evaluate() override
+        double evaluate(parser&) override
         {
             return value;
         }
@@ -172,10 +164,7 @@ namespace ast
             : name(std::move(name))
         {
         }
-        double replaced_value = 1.0;
-        double evaluate() override
-        {
-            return replaced_value;
-        }
+        const double* replaced_value = nullptr;
+        double        evaluate(parser& parser) override;
     };
 } // namespace ast

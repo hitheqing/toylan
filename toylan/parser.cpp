@@ -1,5 +1,7 @@
 ﻿#include "parser.h"
 
+#include <utility>
+
 ExprAST* LogError(const char* str)
 {
     fprintf(stderr, "Error: %s\n", str);
@@ -156,7 +158,7 @@ ExprAST* parser::parse_ident_expr()
         auto V = new IdentExprAST(token->name);
         if (ident_map.find(token->name) != ident_map.end())
         {
-            V->replaced_value = ident_map[token->name];
+            V->replaced_value = & ident_map[token->name];
         }
         return V;
     }
@@ -240,7 +242,7 @@ ExprAST* parser::parse_text(const char* text)
     return parse_expr();
 }
 
-void parser::set_ident_map(const std::map<std::string, double>& map)
+void parser::set_ident_map( std::map<std::string, double> map)
 {
-    ident_map = map;
+    ident_map = std::move(map);
 }

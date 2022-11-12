@@ -78,6 +78,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <LibraryPath>J:\mycompiler\buildclang\Release\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>J:\mycompiler\llvmproject\llvm\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>J:\mycompiler\llvmproject\llvm\include;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -158,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ast.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="toylan.cpp" />
   </ItemGroup>
